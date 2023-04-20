@@ -14,6 +14,7 @@ limitations under the License. */
 
 #include "paddle/phi/infermeta/fusion.h"
 #include <vector>
+#include "glog/logging.h"
 #include "paddle/phi/common/layout.h"
 #include "paddle/phi/common/scalar.h"
 #include "paddle/phi/core/infermeta_utils.h"
@@ -320,6 +321,7 @@ void FusedMultiTransformerXpuInferMeta(
           y_dim));
   if (cache_kv.size() > 0) {
     const auto& c_dim = cache_kv[0]->dims();
+    LOG(INFO) << "xxx, c_dims: " << c_dim;
     PADDLE_ENFORCE_EQ(
         c_dim.size(),
         5,
@@ -330,20 +332,20 @@ void FusedMultiTransformerXpuInferMeta(
                       phi::errors::InvalidArgument(
                           "The first dim of CacheKV must be 2, but got %d",
                           c_dim[0]));  // 2
-    PADDLE_ENFORCE_EQ(c_dim[1],
+    PADDLE_ENFORCE_EQ(c_dim[2],
                       x_dim[0],
                       phi::errors::InvalidArgument(
-                          "The second dim of CacheKV must be equal with "
+                          "The third dim of CacheKV must be equal with "
                           "batch size %d, but got %d",
                           x_dim[0],
-                          c_dim[1]));  // batch_size
-    PADDLE_ENFORCE_EQ(c_dim[2],
+                          c_dim[2]));  // batch_size
+    PADDLE_ENFORCE_EQ(c_dim[3],
                       trans_qkvw ? y_dim[1] : y_dim[2],
                       phi::errors::InvalidArgument(
                           "The third dim of CacheKV must be equal with num "
                           "head %d, but got %d",
                           trans_qkvw ? y_dim[1] : y_dim[2],
-                          c_dim[2]));  // num_head
+                          c_dim[3]));  // num_head
     PADDLE_ENFORCE_EQ(c_dim[4],
                       trans_qkvw ? y_dim[2] : y_dim[3],
                       phi::errors::InvalidArgument(
