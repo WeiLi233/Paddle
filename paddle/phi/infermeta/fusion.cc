@@ -279,6 +279,7 @@ void FusedMultiTransformerXpuInferMeta(
     const std::vector<const MetaTensor*>& time_step,
     const std::vector<const MetaTensor*>& seq_lengths,
     const std::vector<const MetaTensor*>& src_mask,
+    const std::vector<const MetaTensor*>& gather_index,
     bool pre_layer_norm,
     int rotary_emb_dims,
     float epsilon,
@@ -288,6 +289,7 @@ void FusedMultiTransformerXpuInferMeta(
     const std::string& act_method,
     bool trans_qkvw,
     int ring_id,
+    int gather_axis,
     MetaTensor* out,
     std::vector<MetaTensor*> cache_kv_out) {
   auto x_dim = x.dims();
@@ -342,7 +344,7 @@ void FusedMultiTransformerXpuInferMeta(
     PADDLE_ENFORCE_EQ(c_dim[3],
                       trans_qkvw ? y_dim[1] : y_dim[2],
                       phi::errors::InvalidArgument(
-                          "The third dim of CacheKV must be equal with num "
+                          "The fourth dim of CacheKV must be equal with num "
                           "head %d, but got %d",
                           trans_qkvw ? y_dim[1] : y_dim[2],
                           c_dim[3]));  // num_head
