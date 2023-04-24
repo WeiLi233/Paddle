@@ -321,7 +321,7 @@ void FusedMultiTransformerXpuInferMeta(
           y_dim));
   if (cache_kv.size() > 0) {
     const auto& c_dim = cache_kv[0]->dims();
-    LOG(INFO) << "xxx, c_dims: " << c_dim;
+    // LOG(INFO) << "xxx, c_dims: " << c_dim;
     PADDLE_ENFORCE_EQ(
         c_dim.size(),
         5,
